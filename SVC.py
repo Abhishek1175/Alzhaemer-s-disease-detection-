@@ -30,3 +30,16 @@ if result == 1:
     print("The patient is detected with Alzheimer's Disease.")
 else:
     print("The patient is not detected with Alzheimer's Disease.")
+
+
+    C = [0.01, 0.1, 1,10,100]
+for i in range(len(C)):
+  model_i = SVC(
+      C = C[i],
+      kernel = "linear"
+  )
+  model_i.fit(x_train,y_train)
+  ypred_i = model_i.predict(x_test)
+  train_acc = model_i.score(x_train,y_train)
+  score_i = accuracy_score(y_test,ypred_i)
+  print(f"training accuracy is given by{train_acc} \n testing accuracy is given by {score_i}")
