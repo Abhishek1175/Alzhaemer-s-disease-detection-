@@ -43,3 +43,50 @@ for i in range(len(C)):
   train_acc = model_i.score(x_train,y_train)
   score_i = accuracy_score(y_test,ypred_i)
   print(f"training accuracy is given by{train_acc} \n testing accuracy is given by {score_i}")
+
+  from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV
+
+# Parameter grid
+param_grid = {
+    'C': [0.01, 0.1, 1, 10, 100],
+    'gamma': [0.01, 0.1, 1, 10]
+}
+
+kernels = ['rbf', 'sigmoid']
+
+best_score = 0
+best_model = None
+
+for kernel in kernels:
+
+    svc = SVC(kernel=kernel)
+
+    grid = GridSearchCV(
+        estimator=svc,
+        param_grid=param_grid,
+        cv=5,
+        scoring='accuracy',
+        n_jobs=-1
+    )
+
+    grid.fit(x_train, y_train)
+
+    print(f"\nKernel: {kernel}")
+    print("Best Parameters:", grid.best_params_)
+    print("Best CV Score:", grid.best_score_)
+
+    if grid.best_score_ > best_score:
+        best_score = grid.best_score_
+        best_model = grid
+
+print("\nOverall Best Model")
+print("Best Kernel:", best_model.best_estimator_.kernel)
+print("Best Parameters:", best_model.best_params_)
+print("Best CV Accuracy:", best_model.best_score_)
+
+# Test Accuracy
+y_pred = best_model.predict(x_test)
+
+from sklearn.metrics import accuracy_score
+print("Test Accuracy:", accuracy_score(y_test, y_pred))
